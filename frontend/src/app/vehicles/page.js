@@ -408,39 +408,9 @@ const VehiclesPage = () => {
   
   const router = useRouter();
 
-  // const fetchVehicles = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const query = new URLSearchParams({
-  //       page,
-  //       limit: 10,
-  //       categoryId: selectedCategory,
-  //       manufacturerId: selectedManufacturers.join(','),
-  //       keywords,
-  //     });
-
-  //     const response = await fetch(`${BASE_URL}/vehicle?${query}`);
-  //     const data = await response.json();
-  //     if (response.ok) {
-  //       setVehicles(data.data.vehicles);
-  //       setPagination({
-  //         totalPages: data.data.pagination.totalPages,
-  //         totalVehicles: data.data.pagination.totalVehicles,
-  //         viewingRange: data.data.pagination.viewingRange,
-  //       });
-  //     }
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.log('Error fetching vehicles:', error);
-  //     setLoading(false);
-  //   }
-  // };
- 
-
   const fetchVehicles = async () => {
     try {
       setLoading(true);
-      
       const query = new URLSearchParams({
         page,
         limit: 10,
@@ -448,12 +418,10 @@ const VehiclesPage = () => {
         manufacturerId: selectedManufacturers.join(','),
         keywords,
       });
-  
-      const response = await axios.get(`${BASE_URL}/vehicle?${query}`);
-  
-      if (response.status === 200) {
-        const data = response.data;
-  
+
+      const response = await fetch(`${BASE_URL}/vehicle?${query}`);
+      const data = await response.json();
+      if (response.ok) {
         setVehicles(data.data.vehicles);
         setPagination({
           totalPages: data.data.pagination.totalPages,
@@ -461,12 +429,14 @@ const VehiclesPage = () => {
           viewingRange: data.data.pagination.viewingRange,
         });
       }
+      setLoading(false);
     } catch (error) {
-      console.error('Error fetching vehicles:', error);
-    } finally {
+      console.log('Error fetching vehicles:', error);
       setLoading(false);
     }
   };
+ 
+
   
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
