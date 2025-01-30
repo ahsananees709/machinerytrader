@@ -305,7 +305,8 @@ export default function Home() {
             {/* Categories Grid */}
             <h2 className='text-xl font-bold mb-2 text-center'>New & Used Construction Equipment For Sale</h2>
             <div className="grid gap-4 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 mt-5">
-              {categories
+              {
+                categories
                 .filter((category) => category.image)
                 .map((item) => (
                   <div

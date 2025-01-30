@@ -94,7 +94,7 @@ const onVehicleSale = async (req, res) => {
 const onFavourite = async (req, res) => {
     try {
         const { userEmail, vehicleId } = req.body
-        const vehicleUrl = `${BASE_URL}/api/vehicle/?vehicleId=${vehicleId}`
+        const vehicleUrl = `${BASE_URL}/vehicles/${vehicleId}`
         const emailContent = onFavouriteEmail(userEmail,vehicleUrl, RECEIPIENT_EMAIL);
         await sendEmail("Favourite Vehicle", emailContent, RECEIPIENT_EMAIL);
         return successResponse(res, 'Email sent with user and vehicle details', {})
@@ -117,7 +117,7 @@ const onContact = async (req, res) => {
 const onBuy = async (req, res) => {
     try {
         const { userEmail, vehicleId } = req.body
-        const vehicleUrl = `${BASE_URL}/api/vehicle/?vehicleId=${vehicleId}`
+        const vehicleUrl = `${BASE_URL}/vehicles/${vehicleId}`
         const emailContent = onBuyEmail(userEmail,vehicleUrl, RECEIPIENT_EMAIL);
         await sendEmail("New Buy Equipment Form Submission", emailContent, RECEIPIENT_EMAIL);
         return successResponse(res, 'Query Submitted. We will contact you soon.', {})
