@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:4000/api'
+const BASE_URL = 'http://204.12.236.167:4000/api'
 
 export {
     BASE_URL
