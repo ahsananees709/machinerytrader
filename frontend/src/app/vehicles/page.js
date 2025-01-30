@@ -410,7 +410,6 @@ const VehiclesPage = () => {
   const fetchVehicles = async () => {
     try {
       setLoading(true);
-
       const query = new URLSearchParams({
         page,
         limit: 10,
@@ -421,25 +420,17 @@ const VehiclesPage = () => {
 
       const response = await fetch(`${BASE_URL}/vehicle?${query}`);
       const data = await response.json();
-
       if (response.ok) {
-
         setVehicles(data.data.vehicles);
         setPagination({
           totalPages: data.data.pagination.totalPages,
           totalVehicles: data.data.pagination.totalVehicles,
           viewingRange: data.data.pagination.viewingRange,
         });
-      } else {
-        console.log('Error fetching vehicles:', data.message);
       }
-
-      // setLoading(false);
+      setLoading(false);
     } catch (error) {
       console.log('Error fetching vehicles:', error);
-      // setLoading(false);
-    }
-    finally {
       setLoading(false);
     }
   };
@@ -598,7 +589,6 @@ const handleModalSubmit = async () => {
     }
   };
 
-  if (vehicles.length<=0) return 'No Data Found'
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-2 py-6">
@@ -683,160 +673,169 @@ const handleModalSubmit = async () => {
 
 {loading ? (
   <Spinner width={8} height={8}/> 
-      )
-        :  (
-  <>
-    <p className="text-gray-500 mt-5 mb-2 text-right">{pagination.viewingRange}</p>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {vehicles.map((vehicle) => (
-        <div
-          key={vehicle.id}
-          className={`bg-white border-2 shadow-md px-2 pb-4 pt-2 rounded-lg overflow-hidden flex flex-col ${
-            favorites.includes(vehicle.id) ? "border-red-500" : ""
-          }`}
-        >
-          <div className="flex items-start justify-between w-full">
-            <div className=" flex-1 min-w-0 max-w-2/3">
-              <h3 className="text-lg font-bold sm:truncate sm:whitespace-nowrap break-words">
-                {vehicle.name}
-              </h3>
-              <p className="text-sm text-gray-500 mt-1 mb-2">
-                {vehicle.categoryTitle}/{vehicle.manufacturerTitle}
-              </p>
-            </div>
-
-            <div className="flex-shrink-0">
-              <svg
-                onClick={() => handleHeartClick(vehicle)}
-                className={`w-8 h-8 ${
-                  favorites.some((favorite) => favorite.id === vehicle.id) 
-                    ? "text-red-600" 
-                    : "text-gray-500"
-                } hover:text-red-600 transition-all duration-300 cursor-pointer`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-            </div>
-          </div>
-
-          <Swiper
-            modules={[Navigation, Pagination]}
-            spaceBetween={10}
-            slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
-            className="h-48 w-full"
-          >
-            {vehicle.images?.map((img, index) => {
-      const modifiedImg = img.replace(/350|220/g, '');
-
-      return (
-        <SwiperSlide key={index}>
-          <img
-            src={modifiedImg}
-            alt={`${vehicle.title} - ${index + 1}`}
-            className="w-full object-fit h-96 rounded-lg"
-          />
-        </SwiperSlide>
-      );
-    })}  
-          </Swiper>
-
-          <div className="mt-4 text-left">
-            {vehicle.price ? (
-              <span className="text-lg font-semibold">
-                Price: ${vehicle.price.toFixed(2)}
-              </span>
-            ) : (
-              <span className="text-sm font-semibold">
-                Contact us for pricing
-              </span>
-            )}
-          </div>
-
-          <div className="flex justify-between items-center space-x-4 mt-2">
-            <button className="flex-1 bg-secondary px-4 py-2 border-2 border-secondary rounded-xl mt-2 text-white tracking-wide transform hover:scale-105 hover:shadow-lg transition-transform duration-200"
-              onClick={() => {
-                setModal2Open(true)
-                setSelectedVehicle2(vehicle)
-              }}>
-              Buy
-            </button>
-            <button
-              className="flex-1 bg-primary px-4 py-2 border-2 border-primary rounded-xl mt-2 text-white tracking-wide transform hover:scale-105 hover:shadow-lg transition-transform duration-200"
-              onClick={() => router.push(`/vehicles/${vehicle.id}`)}
-            >
-              More Details
-            </button>
-          </div>
+      ) : (
+      <>
+       { vehicles.length  <=0 && (
+          <div className="flex items-center justify-center">
+          <p className="text-2xl font-bold text-center">No Vehicles Found</p>
         </div>
-      ))}
-    </div>
-
-    <div className="flex justify-center mt-6 px-5">
-  {/* First Page */}
-  <button
-    onClick={() => handlePageChange(1)}
-    disabled={page === 1}
-    className={`mr-2 px-4 py-2 rounded-l-md ${
-      page > 1
-        ? "bg-primary text-white"
-        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-    }`}
-  >
-    First
-  </button>
-
-  {/* Previous Page */}
-  <button
-    onClick={() => handlePageChange(page - 1)}
-    disabled={page === 1}
-    className={`mr-2 px-4 py-2 ${
-      page > 1
-        ? "bg-primary text-white"
-        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-    }`}
-  >
-    ◀
-  </button>
-
-  {/* Current Page */}
-  <span className="px-4 py-2 bg-primary text-white font-bold">
-    {page}
-  </span>
-
-  {/* Next Page */}
-  <button
-    onClick={() => handlePageChange(page + 1)}
-    disabled={page === pagination.totalPages}
-    className={`ml-2 px-4 py-2 ${
-      page < pagination.totalPages
-        ? "bg-primary text-white"
-        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-    }`}
-  >
-    ▶
-  </button>
-
-  {/* Last Page */}
-  <button
-    onClick={() => handlePageChange(pagination.totalPages)}
-    disabled={page === pagination.totalPages}
-    className={`ml-2 px-4 py-2 rounded-r-md ${
-      page < pagination.totalPages
-        ? "bg-primary text-white"
-        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-    }`}
-  >
-    Last
-  </button>
-</div>
-
-  </>
-)}
+            )}
+            {vehicles.length > 0 && (
+               <>
+               <p className="text-gray-500 mt-5 mb-2 text-right">{pagination.viewingRange}</p>
+               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                 {vehicles.map((vehicle) => (
+                   <div
+                     key={vehicle.id}
+                     className={`bg-white border-2 shadow-md px-2 pb-4 pt-2 rounded-lg overflow-hidden flex flex-col ${
+                       favorites.includes(vehicle.id) ? "border-red-500" : ""
+                     }`}
+                   >
+                     <div className="flex items-start justify-between w-full">
+                       <div className=" flex-1 min-w-0 max-w-2/3">
+                         <h3 className="text-lg font-bold sm:truncate sm:whitespace-nowrap break-words">
+                           {vehicle.name}
+                         </h3>
+                         <p className="text-sm text-gray-500 mt-1 mb-2">
+                           {vehicle.categoryTitle}/{vehicle.manufacturerTitle}
+                         </p>
+                       </div>
+           
+                       <div className="flex-shrink-0">
+                         <svg
+                           onClick={() => handleHeartClick(vehicle)}
+                           className={`w-8 h-8 ${
+                             favorites.some((favorite) => favorite.id === vehicle.id) 
+                               ? "text-red-600" 
+                               : "text-gray-500"
+                           } hover:text-red-600 transition-all duration-300 cursor-pointer`}
+                           xmlns="http://www.w3.org/2000/svg"
+                           fill="currentColor"
+                           viewBox="0 0 24 24"
+                         >
+                           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                         </svg>
+                       </div>
+                     </div>
+           
+                     <Swiper
+                       modules={[Navigation, Pagination]}
+                       spaceBetween={10}
+                       slidesPerView={1}
+                       navigation
+                       pagination={{ clickable: true }}
+                       className="h-48 w-full"
+                     >
+                       {vehicle.images?.map((img, index) => {
+                 const modifiedImg = img.replace(/350|220/g, '');
+           
+                 return (
+                   <SwiperSlide key={index}>
+                     <img
+                       src={modifiedImg}
+                       alt={`${vehicle.title} - ${index + 1}`}
+                       className="w-full object-fit h-96 rounded-lg"
+                     />
+                   </SwiperSlide>
+                 );
+               })}  
+                     </Swiper>
+           
+                     <div className="mt-4 text-left">
+                       {vehicle.price ? (
+                         <span className="text-lg font-semibold">
+                           Price: ${vehicle.price.toFixed(2)}
+                         </span>
+                       ) : (
+                         <span className="text-sm font-semibold">
+                           Contact us for pricing
+                         </span>
+                       )}
+                     </div>
+           
+                     <div className="flex justify-between items-center space-x-4 mt-2">
+                       <button className="flex-1 bg-secondary px-4 py-2 border-2 border-secondary rounded-xl mt-2 text-white tracking-wide transform hover:scale-105 hover:shadow-lg transition-transform duration-200"
+                         onClick={() => {
+                           setModal2Open(true)
+                           setSelectedVehicle2(vehicle)
+                         }}>
+                         Buy
+                       </button>
+                       <button
+                         className="flex-1 bg-primary px-4 py-2 border-2 border-primary rounded-xl mt-2 text-white tracking-wide transform hover:scale-105 hover:shadow-lg transition-transform duration-200"
+                         onClick={() => router.push(`/vehicles/${vehicle.id}`)}
+                       >
+                         More Details
+                       </button>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+           
+               <div className="flex justify-center mt-6 px-5">
+             {/* First Page */}
+             <button
+               onClick={() => handlePageChange(1)}
+               disabled={page === 1}
+               className={`mr-2 px-4 py-2 rounded-l-md ${
+                 page > 1
+                   ? "bg-primary text-white"
+                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
+               }`}
+             >
+               First
+             </button>
+           
+             {/* Previous Page */}
+             <button
+               onClick={() => handlePageChange(page - 1)}
+               disabled={page === 1}
+               className={`mr-2 px-4 py-2 ${
+                 page > 1
+                   ? "bg-primary text-white"
+                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
+               }`}
+             >
+               ◀
+             </button>
+           
+             {/* Current Page */}
+             <span className="px-4 py-2 bg-primary text-white font-bold">
+               {page}
+             </span>
+           
+             {/* Next Page */}
+             <button
+               onClick={() => handlePageChange(page + 1)}
+               disabled={page === pagination.totalPages}
+               className={`ml-2 px-4 py-2 ${
+                 page < pagination.totalPages
+                   ? "bg-primary text-white"
+                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
+               }`}
+             >
+               ▶
+             </button>
+           
+             {/* Last Page */}
+             <button
+               onClick={() => handlePageChange(pagination.totalPages)}
+               disabled={page === pagination.totalPages}
+               className={`ml-2 px-4 py-2 rounded-r-md ${
+                 page < pagination.totalPages
+                   ? "bg-primary text-white"
+                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
+               }`}
+             >
+               Last
+             </button>
+           </div>
+           
+                       </>
+            )}
+            </>
+      )
+   }
 
     </div>
   );
