@@ -423,6 +423,7 @@ const VehiclesPage = () => {
       const data = await response.json();
 
       if (response.ok) {
+
         setVehicles(data.data.vehicles);
         setPagination({
           totalPages: data.data.pagination.totalPages,
@@ -439,11 +440,10 @@ const VehiclesPage = () => {
       // setLoading(false);
     }
     finally {
-      setLoading(false);  // Make sure to set loading to false even in case of error
+      setLoading(false);
     }
   };
 
-  // Load favorites from localStorage
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
     setFavorites(storedFavorites);
@@ -459,13 +459,13 @@ const VehiclesPage = () => {
         const manufacturers = localStorage.getItem('selectedManufacturers');
         if (manufacturers) {
           try {
-            return JSON.parse(manufacturers); // Parse only if valid JSON
+            return JSON.parse(manufacturers);
           } catch (error) {
             console.error('Error parsing selectedManufacturers:', error);
-            return setSelectedManufacturers; // Fallback to default
+            return setSelectedManufacturers; 
           }
         }
-        return setSelectedManufacturers; // Fallback if manufacturers is null or undefined
+        return setSelectedManufacturers;
       })();
         const storedKeywords = localStorage.getItem('keywords') || '';
         const storedPage = Number(localStorage.getItem('page')) || 1;
@@ -598,6 +598,8 @@ const handleModalSubmit = async () => {
     }
   };
 
+  if (vehicles.length<=0) return 'No Data Found'
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-2 py-6">
       {modalOpen && (
@@ -681,11 +683,6 @@ const handleModalSubmit = async () => {
 
 {loading ? (
   <Spinner width={8} height={8}/> 
-      )
-      : vehicles.length === 0 ? (
-        <div className="flex items-center justify-center">
-          <p className="text-2xl font-bold text-center">No Vehicles Found</p>
-        </div>
       )
         :  (
   <>
