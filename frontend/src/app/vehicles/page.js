@@ -455,7 +455,18 @@ const VehiclesPage = () => {
     //   }, [page, selectedCategory, selectedManufacturers, keywords]);
     useEffect(() => {
       const storedCategory = localStorage.getItem('selectedCategory') || selectedCategory;
-        const storedManufacturers = JSON.parse(localStorage.getItem('selectedManufacturers')) || setSelectedManufacturers;
+      const storedManufacturers = (() => {
+        const manufacturers = localStorage.getItem('selectedManufacturers');
+        if (manufacturers) {
+          try {
+            return JSON.parse(manufacturers); // Parse only if valid JSON
+          } catch (error) {
+            console.error('Error parsing selectedManufacturers:', error);
+            return setSelectedManufacturers; // Fallback to default
+          }
+        }
+        return setSelectedManufacturers; // Fallback if manufacturers is null or undefined
+      })();
         const storedKeywords = localStorage.getItem('keywords') || '';
         const storedPage = Number(localStorage.getItem('page')) || 1;
       
@@ -464,8 +475,8 @@ const VehiclesPage = () => {
         setKeywords(storedKeywords);
         setPage(storedPage);
       
-        fetchVehicles().finally(() => setLoading(false));; // Fetch vehicles after setting filters
-    }, []);
+        fetchVehicles(); // Fetch vehicles after setting filters
+      }, []);
   
       useEffect(() => {
         localStorage.setItem('selectedCategory', selectedCategory);
