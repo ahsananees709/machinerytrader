@@ -53,10 +53,10 @@ import { upload_file } from '../utils/cloudinary.js';
 
 const onVehicleSale = async (req, res) => {
   try {
-    upload(req, res, async (err) => {
-      if (err) {
-        return errorResponse(res, err.message, 400);
-      }
+    // upload(req, res, async (err) => {
+    //   if (err) {
+    //     return errorResponse(res, err.message, 400);
+    //   }
 
         const { fullName, phone, email, vehicleLocation, make, model, year, price } = req.body;
 
@@ -85,7 +85,7 @@ const onVehicleSale = async (req, res) => {
       return successResponse(res, 'Email sent with user and vehicle details, including images.', {
         uploadedImages,
       });
-    });
+    // });
   } catch (error) {
     return errorResponse(res, error.message, 500);
   }
