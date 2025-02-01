@@ -2,6 +2,7 @@
 
 import React, { Fragment, useState } from 'react';
 import { BASE_URL } from '../utils/constant';
+import { Spinner } from '../ui/spinner';
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function ContactUsPage() {
 
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,6 +33,7 @@ export default function ContactUsPage() {
     }
 
     try {
+      setIsSubmitting(true)
       const response = await fetch(`${BASE_URL}/email/contact-us`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,7 +43,7 @@ export default function ContactUsPage() {
       if (!response.ok) {
         throw new Error('Something went wrong. Please try again.');
       }
-
+      setIsSubmitting(false)
       setSuccessMessage('Thank you for contacting us! We will get back to you soon.');
       setErrorMessage('');
       setFormData({
@@ -50,6 +53,7 @@ export default function ContactUsPage() {
         message: '',
       });
     } catch (error) {
+      setIsSubmitting(false)
       setErrorMessage(error.message || 'An error occurred. Please try again later.');
     }
   };
@@ -66,8 +70,8 @@ export default function ContactUsPage() {
             </a>
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-                      {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
+            {errorMessage && <p className="text-red-500 text-center text-sm">{errorMessage}</p>}
+                      {successMessage && <p className="text-green-500 text-center text-sm">{successMessage}</p>}
                       <div className='flex items-center justify-between gap-2'>
             <div className="flex flex-col gap-1 w-full">
               <label htmlFor="fullName" className="text-sm font-medium text-gray-700">
@@ -131,7 +135,14 @@ export default function ContactUsPage() {
               type="submit"
               className="w-full py-2 bg-primary text-white font-semibold rounded-md hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              Submit
+                {isSubmitting ? (
+                                          <div className="flex items-center justify-center">
+                                            Submitting...
+                                                  <Spinner width={6} height={6}/>  
+                                          </div>
+                                        ) : (
+                                          'Submit'
+                                        )}
             </button>
           </form>
         </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BASE_URL } from "../utils/constant";
+import { Spinner } from "../ui/spinner";
 const SellModal = ({ onClose }) => {
     const [formData, setFormData] = useState({
       fullName: "",
@@ -15,7 +16,8 @@ const SellModal = ({ onClose }) => {
     const [errors, setErrors] = useState({});
     const [imageError, setImageError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting,setIsSubmitting] = useState(false)
   
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -100,23 +102,27 @@ const SellModal = ({ onClose }) => {
           formDataToSend.append("images", image);
         });
       
-        try {
+      try {
+        setIsSubmitting(true)
           const response = await fetch(`${BASE_URL}/email/vehicle-sale`, {
             method: "POST",
             body: formDataToSend,
           });
       
-          if (response.ok) {
+        if (response.ok) {
+            setIsSubmitting(false)
             setSuccessMessage("Your inquiry has been submitted successfully!");
             setErrorMessage("");
             setTimeout(() => {
               onClose();
             }, 2000);
-          } else {
+        } else {
+          setIsSubmitting(false)
             const errorData = await response.json();
             setErrorMessage(errorData.message || "Something went wrong!");
           }
-        } catch (error) {
+      } catch (error) {
+        setIsSubmitting(false)
           setErrorMessage("Unable to send your inquiry at this time.");
         }
       };
@@ -331,7 +337,14 @@ const SellModal = ({ onClose }) => {
                 type="submit"
                 className="bg-primary text-white px-4 py-2 hover:bg-blue-600 rounded"
               >
-                Submit
+                {isSubmitting ? (
+                            <div className="flex items-center">
+                              Submitting...
+                                    <Spinner width={6} height={6}/>  
+                            </div>
+                          ) : (
+                            'Submit'
+                          )}
               </button>
             </div>
           </form>

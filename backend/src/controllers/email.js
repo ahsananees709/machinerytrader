@@ -62,13 +62,10 @@ const onVehicleSale = async (req, res) => {
 
         // code for uploading images on our server
         //   const uploadedImages = req.files.map((file) => `${BASE_URL}/uploads/${file.filename}`);
-        const files = Array.isArray(req.files) ? req.files : [req.files];
-    //code for upload on claudinary
-    if (req.file) {
-      return errorResponse
-    }
+      
+        //code for upload on claudinary
         const uploader = async (image) => upload_file(image, "/machinerytrader/vehicle_images");
-        const urls = await Promise.all(files.map(file => uploader(file.path)));
+        const urls = await Promise.all(req.files.map(file => uploader(file.path)));
         const uploadedImages = urls.map((file) => file.url);
 
       const emailContent = onVehicleSaleEmail(
