@@ -19,7 +19,7 @@ const server_port = SERVER_PORT || 4000
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')))
 app.use(express.json())
-app.use('/api', routes)
+app.use('/', routes)
 
 app.listen(server_port,() => {
     console.log(`Server is listening on http://${server_host}:${server_port}`)
