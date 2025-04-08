@@ -1,5 +1,4 @@
-const BASE_URL = 'http://204.12.236.167:85/api'
-
+const BASE_URL = 'http://208.110.83.16:85/api'
 export {
     BASE_URL
 }
