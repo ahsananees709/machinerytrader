@@ -678,7 +678,7 @@ const handleModalSubmit = async () => {
   <Spinner width={8} height={8}/> 
       ) : (
       <>
-            {vehicles.length === 0 ? (
+            {!selectedCategory && vehicles.length === 0 ? (
               <div className="flex items-center justify-center">
                 <p className="text-2xl font-bold text-center">No Vehicles Found</p>
               </div>
