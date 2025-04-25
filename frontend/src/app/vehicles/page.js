@@ -678,7 +678,7 @@ const handleModalSubmit = async () => {
   <Spinner width={8} height={8}/> 
       ) : (
       <>
-       { vehicles.length  <=0 && (
+       { vehicles && vehicles.length  <=0 && (
           <div className="flex items-center justify-center">
           <p className="text-2xl font-bold text-center">No Vehicles Found</p>
         </div>
@@ -727,7 +727,7 @@ const handleModalSubmit = async () => {
                        slidesPerView={1}
                        navigation
                        pagination={{ clickable: true }}
-                       className="h-48 w-full"
+                       className="h-full w-full"
                      >
                        {vehicle.images?.map((img, index) => {
                  const modifiedImg = img.replace(/350|220/g, '');
@@ -737,7 +737,7 @@ const handleModalSubmit = async () => {
                      <img
                        src={modifiedImg}
                        alt={`${vehicle.title} - ${index + 1}`}
-                       className="w-full object-fit h-96 rounded-lg"
+                       className="w-full object-fit h-full rounded-lg"
                      />
                    </SwiperSlide>
                  );
