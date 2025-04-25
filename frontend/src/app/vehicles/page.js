@@ -683,8 +683,6 @@ const handleModalSubmit = async () => {
                 <p className="text-2xl font-bold text-center">No Vehicles Found</p>
               </div>
             ) : (
-              <>
-                {vehicles.length > 0 && (
                   <>
                     <p className="text-gray-500 mt-5 mb-2 text-right">{pagination.viewingRange}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -829,8 +827,8 @@ const handleModalSubmit = async () => {
                       </button>
                     </div>
            
-                  </>
-                )}
+               
+                
               </>)}
             </>
       )
